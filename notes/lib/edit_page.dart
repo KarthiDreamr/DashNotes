@@ -78,7 +78,7 @@ class EditPage extends StatelessWidget {
                                 .removeNotes(index!);
 
                             context
-                                .watch<SharedPreferenceProvider>()
+                                .read<SharedPreferenceProvider>()
                                 .prefs
                                 .setStringList(
                                     "notesList",
@@ -107,9 +107,9 @@ class EditPage extends StatelessWidget {
                           _formKey.currentState!.save();
 
                           if (index != null) {
-                            context.watch<NotesListProvider>().updateNotes(
+                            context.read<NotesListProvider>().updateNotes(
                                 index!, "title", titleController.text);
-                            context.watch<NotesListProvider>().updateNotes(
+                            context.read<NotesListProvider>().updateNotes(
                                 index!, "subtitle", descriptionController.text);
 
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -120,14 +120,14 @@ class EditPage extends StatelessWidget {
                               const SnackBar(content: Text('Notes created!')),
                             );
 
-                            context.watch<NotesListProvider>().addNotes({
+                            context.read()<NotesListProvider>().addNotes({
                               "title": titleController.text,
                               "subtitle": descriptionController.text
                             });
                           }
 
                           context
-                              .watch<SharedPreferenceProvider>()
+                              .read<SharedPreferenceProvider>()
                               .prefs
                               .setStringList(
                                   "notesList",

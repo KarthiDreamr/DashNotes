@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: context.watch<SharedPreferenceProvider>().initPref(),
+      future: context.read<SharedPreferenceProvider>().initPref(),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         if (snapshot.hasData &&
             snapshot.connectionState == ConnectionState.done) {
@@ -71,9 +71,9 @@ class _HomePageState extends State<HomePage> {
                     key: ValueKey<Map<String, dynamic>>(
                         context.read<NotesListProvider>().notesList[index]),
                     onDismissed: (DismissDirection direction) {
-                      context.watch<NotesListProvider>().removeNotes(index);
+                      context.read<NotesListProvider>().removeNotes(index);
                       context
-                          .watch<SharedPreferenceProvider>()
+                          .read<SharedPreferenceProvider>()
                           .prefs
                           .setStringList(
                               "notesList",
