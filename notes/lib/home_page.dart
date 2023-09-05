@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage> {
                 .getStringList("notesList")!;
             List decodedJsonList =
                 encodedJsonList.map((e) => jsonDecode(e)).toList();
-            context.watch<NotesListProvider>().setNotesList = decodedJsonList;
+            context.read<NotesListProvider>().setNotesList = decodedJsonList;
           }
 
           return Scaffold(
@@ -68,8 +68,8 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.red,
                       child: const Center(child: Text("Delete")),
                     ),
-                    key: ValueKey<Map<String, dynamic>>(
-                        context.read<NotesListProvider>().notesList[index]),
+                    key: ValueKey<DateTime>(
+                        DateTime.now()),
                     onDismissed: (DismissDirection direction) {
                       context.read<NotesListProvider>().removeNotes(index);
                       context
@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
                           .prefs
                           .setStringList(
                               "notesList",
-                              Provider.of<NotesListProvider>(context)
+                              context.read<NotesListProvider>()
                                   .notesList
                                   .map((e) => jsonEncode(e))
                                   .toList());

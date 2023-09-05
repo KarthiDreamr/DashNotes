@@ -82,7 +82,7 @@ class EditPage extends StatelessWidget {
                                 .prefs
                                 .setStringList(
                                     "notesList",
-                                    Provider.of<NotesListProvider>(context)
+                                    context.read<NotesListProvider>()
                                         .notesList
                                         .map((e) => jsonEncode(e))
                                         .toList());
@@ -120,7 +120,7 @@ class EditPage extends StatelessWidget {
                               const SnackBar(content: Text('Notes created!')),
                             );
 
-                            context.read()<NotesListProvider>().addNotes({
+                            context.read<NotesListProvider>().addNotes({
                               "title": titleController.text,
                               "subtitle": descriptionController.text
                             });
