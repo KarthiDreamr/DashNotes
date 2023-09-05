@@ -1,25 +1,25 @@
-import 'package:flutter/material.dart';
-import 'package:notes/global_var.dart';
+import 'dart:convert';
 
-class EditPage extends StatefulWidget {
-  const EditPage({super.key, this.index});
+import 'package:flutter/material.dart';
+import 'package:notes/notes_list_provider.dart';
+import 'package:notes/shared_preference_provider.dart';
+import 'package:provider/provider.dart';
+
+class EditPage extends StatelessWidget {
+  EditPage({super.key, this.index});
 
   final int? index;
-
-  @override
-  State<EditPage> createState() => _EditPageState();
-}
-
-class _EditPageState extends State<EditPage> {
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    if (widget.index != null) {
-      titleController.text = notes[widget.index!]["title"]!;
-      descriptionController.text = notes[widget.index!]["subtitle"]!;
+    if (index != null) {
+      titleController.text =
+          context.read<NotesListProvider>().notesList[index!]["title"]!;
+      descriptionController.text =
+          context.read<NotesListProvider>().notesList[index!]["subtitle"]!;
     }
 
     return Scaffold(
@@ -33,8 +33,8 @@ class _EditPageState extends State<EditPage> {
           padding: const EdgeInsets.all(12.0),
           child: Column(
             children: [
-              SizedBox(
-                width: 250,
+              Padding(
+                padding: const EdgeInsets.only(right: 110),
                 child: TextFormField(
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -43,39 +43,21 @@ class _EditPageState extends State<EditPage> {
                     return null;
                   },
                   controller: titleController,
-                  onChanged: (value) {
-                    if(value!=null && value.isEmpty){
-                      if (widget.index != null) {
-                        notes[widget.index!]["title"] = value;
-                      }
-                    }
-                    else{
-                      setState(() {
-                        titleController.text= notes[widget.index!]["title"]!;
-                      });
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Title Cannot be Empty!')),
-                      );
-                    }
-                  },
+                  maxLength: 24,
                   decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Title',
-                  ),
+                      border: OutlineInputBorder(), labelText: 'Title'),
                 ),
               ),
               const SizedBox(
-                height: 20,
+                height: 10,
               ),
               SizedBox(
                 child: TextFormField(
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter some text';
-                    }
                     return null;
                   },
-                  maxLines: null,
+                  minLines: 3,
+                  maxLines: 7,
                   keyboardType: TextInputType.multiline,
                   controller: descriptionController,
                   decoration: const InputDecoration(
@@ -83,63 +65,87 @@ class _EditPageState extends State<EditPage> {
                     labelText: 'Description',
                     contentPadding: EdgeInsets.all(20.0),
                   ),
-                  onChanged: (value) {
-                    if (widget.index != null) {
-                      notes[widget.index!]["subtitle"] = value;
-                    }
-                  },
                 ),
               ),
-              Row(children: [
-                (widget.index != null)
-                    ? IconButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          setState(() {
-                            notes.removeAt(widget.index!);
-                          });
-                        },
-                        icon: const Icon(Icons.delete),
-                      )
-                    : Container(),
-                const Expanded(
-                  child: SizedBox(
-                    width: 20,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: IconButton(
-                    onPressed: () {
-                      // Validate returns true if the form is valid, or false otherwise.
-                      if (_formKey.currentState!.validate()) {
-                        if (widget.index != null) {
-                          notes[widget.index!]["title"] = titleController.text;
-                          notes[widget.index!]["subtitle"] =
-                              descriptionController.text;
+              Row(
+                children: [
+                  (index != null)
+                      ? ElevatedButton.icon(
+                          label: const Text("Delete"),
+                          onPressed: () {
+                            context
+                                .read<NotesListProvider>()
+                                .removeNotes(index!);
 
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Changes saved!')),
-                          );
-                        } else {
-                          setState(() {
-                            notes.add({
+                            context
+                                .watch<SharedPreferenceProvider>()
+                                .prefs
+                                .setStringList(
+                                    "notesList",
+                                    Provider.of<NotesListProvider>(context)
+                                        .notesList
+                                        .map((e) => jsonEncode(e))
+                                        .toList());
+
+                            Navigator.of(context).pop();
+                          },
+                          icon: const Icon(Icons.delete),
+                        )
+                      : Container(),
+                  const Expanded(
+                    child: SizedBox(
+                      width: 20,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        // Future.delayed(Duration.zero, () {
+                        // Validate returns true if the form is valid, or false otherwise.
+                        if (_formKey.currentState!.validate()) {
+                          _formKey.currentState!.save();
+
+                          if (index != null) {
+                            context.watch<NotesListProvider>().updateNotes(
+                                index!, "title", titleController.text);
+                            context.watch<NotesListProvider>().updateNotes(
+                                index!, "subtitle", descriptionController.text);
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Changes saved!')),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Notes created!')),
+                            );
+
+                            context.watch<NotesListProvider>().addNotes({
                               "title": titleController.text,
                               "subtitle": descriptionController.text
                             });
-                          });
+                          }
 
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Notes created!')),
-                          );
+                          context
+                              .watch<SharedPreferenceProvider>()
+                              .prefs
+                              .setStringList(
+                                  "notesList",
+                                  context
+                                      .read<NotesListProvider>()
+                                      .notesList
+                                      .map((e) => jsonEncode(e))
+                                      .toList());
+
                           Navigator.of(context).pop();
                         }
-                      }
-                    },
-                    icon: const Icon(Icons.save),
+                      },
+                      icon: const Icon(Icons.save),
+                      label: const Text("Save"),
+                    ),
                   ),
-                ),
-              ]),
+                ],
+              ),
             ],
           ),
         ),
