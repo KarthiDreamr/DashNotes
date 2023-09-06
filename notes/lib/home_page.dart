@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
             .toList());
 
     print(
-        "-------------------------------------------------------------------");
+        "-----------------------------------------------------------------------------------------");
     print("setted");
     print(
         "-----------------------------------------------------------------------------------------");
@@ -54,59 +54,65 @@ class _HomePageState extends State<HomePage> {
             context.read<NotesListProvider>().setNotesList = decodedJsonList;
           }
 
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('Notes'),
-            ),
-            body: ListView.builder(
-              itemCount: context.watch<NotesListProvider>().notesList.length,
-              itemBuilder: (BuildContext context, index) {
-                return Padding(
-                  padding: const EdgeInsets.only(left: 5, right: 5, bottom: 5),
-                  child: Dismissible(
-                    background: Container(
-                      color: Colors.red,
-                      child: const Center(child: Text("Delete")),
-                    ),
-                    key: ValueKey<DateTime>(
-                        DateTime.now()),
-                    onDismissed: (DismissDirection direction) {
-                      context.read<NotesListProvider>().removeNotes(index);
-                      context
-                          .read<SharedPreferenceProvider>()
-                          .prefs
-                          .setStringList(
+          return Consumer<NotesListProvider>(
+            builder: (context,notesList,child){
+              return Scaffold(
+                appBar: AppBar(
+                  title: const Text('Notes'),
+                ),
+                body: ListView.builder(
+                  itemCount: context.read<NotesListProvider>().notesList.length,
+                  itemBuilder: (BuildContext context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 5, right: 5, bottom: 5),
+                      child: Dismissible(
+                        background: Container(
+                          color: Colors.red,
+                          child: const Center(child: Text("Delete")),
+                        ),
+                        key: ValueKey<DateTime>(
+                          DateTime.now(),
+                        ),
+                        onDismissed: (DismissDirection direction) {
+                          context.read<NotesListProvider>().removeNotes(index);
+                          context
+                              .read<SharedPreferenceProvider>()
+                              .prefs
+                              .setStringList(
                               "notesList",
                               context.read<NotesListProvider>()
                                   .notesList
                                   .map((e) => jsonEncode(e))
                                   .toList());
-                    },
-                    child: Card(
-                      child: ListTile(
-                        onTap: () => {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => EditPage(index: index)))
                         },
-                        title: Text(context
-                            .read<NotesListProvider>()
-                            .notesList[index]["title"]!),
+                        child: Card(
+                          child: ListTile(
+                            onTap: () => {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => EditPage(index: index)))
+                            },
+                            title: Text(context
+                                .read<NotesListProvider>()
+                                .notesList[index]["title"]!),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                );
-              },
-            ),
-            floatingActionButton: FloatingActionButton(
-              child: const Icon(Icons.add),
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => EditPage(),
-                  ),
-                );
-              },
-            ),
+                    );
+                  },
+                ),
+                floatingActionButton: FloatingActionButton(
+                  child: const Icon(Icons.add),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => EditPage(),
+                      ),
+                    );
+                  },
+                ),
+              );
+            }
+
           );
         } else {
           return const Scaffold(body: CircularProgressIndicator());

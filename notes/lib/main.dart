@@ -4,12 +4,22 @@ import 'package:provider/provider.dart';
 
 import 'home_page.dart';
 import 'notes_list_provider.dart';
+import 'package:flutter/services.dart';
 
 void main() {
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (_) => NotesListProvider()),
-    ChangeNotifierProvider(create: (_) => SharedPreferenceProvider())
-  ], child: const MyApp()));
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]).then((value) => runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => NotesListProvider()),
+        ChangeNotifierProvider(create: (_) => SharedPreferenceProvider())
+      ],
+      child: const MyApp(),
+    ),
+  ));
 }
 
 class MyApp extends StatelessWidget {
