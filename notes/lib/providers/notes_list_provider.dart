@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 
 class NotesListProvider with ChangeNotifier, DiagnosticableTreeMixin {
-  List _notesList = [  ];
+  List<Map<String, String>> _notesList = [  ];
 
-  List get notesList => _notesList;
+  List<Map<String, String>> get notesList => _notesList;
 
   void addNotes(Map<String, String> value) {
     _notesList.add(value);
@@ -15,7 +15,7 @@ class NotesListProvider with ChangeNotifier, DiagnosticableTreeMixin {
     notifyListeners();
   }
 
-  set setNotesList(List listList) {
+  set setNotesList(List<Map<String, String>> listList) {
     _notesList = listList;
     notifyListeners();
   }

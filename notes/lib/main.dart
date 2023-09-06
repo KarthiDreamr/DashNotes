@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:notes/shared_preference_provider.dart';
+import 'package:notes/providers/shared_preference_provider.dart';
 import 'package:provider/provider.dart';
 
-import 'home_page.dart';
-import 'notes_list_provider.dart';
+import 'pages/home_page.dart';
+import 'providers/notes_list_provider.dart';
 import 'package:flutter/services.dart';
 
 void main() {

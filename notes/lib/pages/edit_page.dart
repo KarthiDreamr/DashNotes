@@ -1,16 +1,15 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:notes/notes_list_provider.dart';
-import 'package:notes/shared_preference_provider.dart';
+import 'package:notes/providers/notes_list_provider.dart';
+import 'package:notes/providers/shared_preference_provider.dart';
 import 'package:provider/provider.dart';
 
 class EditPage extends StatelessWidget {
   EditPage({super.key, this.index});
 
   final int? index;
-  TextEditingController titleController = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -77,16 +76,10 @@ class EditPage extends StatelessWidget {
                                 .read<NotesListProvider>()
                                 .removeNotes(index!);
 
-                            context
-                                .read<SharedPreferenceProvider>()
-                                .prefs
-                                .setStringList(
-                                    "notesList",
-                                    context.read<NotesListProvider>()
-                                        .notesList
-                                        .map((e) => jsonEncode(e))
-                                        .toList());
-
+                            context.read<SharedPreferenceProvider>().updateSharedPreferences(context.read<NotesListProvider>().notesList);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Notes deleted!')),
+                            );
                             Navigator.of(context).pop();
                           },
                           icon: const Icon(Icons.delete),
@@ -126,17 +119,7 @@ class EditPage extends StatelessWidget {
                             });
                           }
 
-                          context
-                              .read<SharedPreferenceProvider>()
-                              .prefs
-                              .setStringList(
-                                  "notesList",
-                                  context
-                                      .read<NotesListProvider>()
-                                      .notesList
-                                      .map((e) => jsonEncode(e))
-                                      .toList());
-
+                          context.read<SharedPreferenceProvider>().updateSharedPreferences(context.read<NotesListProvider>().notesList);
                           Navigator.of(context).pop();
                         }
                       },
