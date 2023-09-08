@@ -4,15 +4,14 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferenceProvider with ChangeNotifier, DiagnosticableTreeMixin {
+
   late SharedPreferences _prefs;
 
-  SharedPreferenceProvider() {
-    initSharedPreferences();
-  }
+  // late String notesList="notesList";
 
   SharedPreferences get prefs => _prefs;
 
-  void initSharedPreferences() async {
+  Future initSharedPreferences() async {
     _prefs = await SharedPreferences.getInstance();
     notifyListeners();
   }
@@ -32,9 +31,19 @@ class SharedPreferenceProvider with ChangeNotifier, DiagnosticableTreeMixin {
     return encodedJsonList;
   }
 
-  List<Map<String, String>> getDecodedJsonList(List<String> value) {
-    List<Map<String, String>> decodedJsonList =
-        value.map((e) => jsonDecode(e) as Map<String, String>).toList();
+  List<Map<String, String>> decodeJsonList(List<String> value) {
+  List<Map<String, String>> decodedJsonList = value.map((e) {
+    Map<String, dynamic> map = jsonDecode(e);
+    Map<String, String> stringMap = map.map((key, value) => MapEntry(key, value.toString()));
+    return stringMap;
+  }).toList();
+  return decodedJsonList;
+}
+
+
+  List<Map<String, String>> getNotesList() {
+    List<String> encodedJsonList = _prefs.getStringList("notesList") ?? [];
+    List<Map<String, String>> decodedJsonList = decodeJsonList(encodedJsonList);
     return decodedJsonList;
   }
 

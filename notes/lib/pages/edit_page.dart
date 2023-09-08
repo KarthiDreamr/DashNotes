@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:notes/providers/notes_list_provider.dart';
 import 'package:notes/providers/shared_preference_provider.dart';
@@ -14,6 +13,7 @@ class EditPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     if (index != null) {
       titleController.text =
           context.read<NotesListProvider>().notesList[index!]["title"]!;
