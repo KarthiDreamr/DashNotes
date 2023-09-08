@@ -12,14 +12,14 @@ void main() {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]).then((value) => runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => NotesListProvider()),
-        ChangeNotifierProvider(create: (_) => SharedPreferenceProvider())
-      ],
-      child: const MyApp(),
-    ),
-  ));
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => SharedPreferenceProvider()),
+            ChangeNotifierProvider(create: (_) => NotesListProvider()),
+          ],
+          child: const MyApp(),
+        ),
+      ));
 }
 
 class MyApp extends StatelessWidget {
@@ -27,13 +27,26 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Notes App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const HomePage(),
+    return FutureBuilder(
+      future: context.read<SharedPreferenceProvider>().initSharedPreferences(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          
+          context.read<NotesListProvider>().setNotesList =
+              context.read<SharedPreferenceProvider>().getNotesList();
+
+          return MaterialApp(
+            title: 'Notes App',
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+              useMaterial3: true,
+            ),
+            home: const HomePage(),
+          );
+        } else {
+          return const CircularProgressIndicator();
+        }
+      },
     );
   }
 }
