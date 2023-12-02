@@ -18,6 +18,9 @@ One of the key advantages of using Flutter is its cross-platform compatibility. 
 
 Screenshots of the application will be added here.
 
+
+Enjoy taking notes with DashNotes! 🎉🎊
+
 ## 🚀 Get Started 🏁
 
 To get started with DashNotes, you can install the app using the links provided in the GitHub releases or F-Droid (links to be added). 
@@ -40,6 +43,6 @@ The `platform` can be any of the following:
 
 ## 📜 License 📄
 
-Details about the license will be added here.
+This project is licensed under the GNU General Public License (GPL). The GPL is a strong copyleft license that requires improvements to be shared back with the community. For more information, see the [LICENSE](https://www.gnu.org/licenses/gpl-3.0.txt) file.
 
-Enjoy taking notes with DashNotes! 🎉🎊
+
