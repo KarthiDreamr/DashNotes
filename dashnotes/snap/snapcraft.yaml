@@ -1,0 +1,28 @@
+name: dashnotes
+version: 0.1.0
+summary: DashNotes App
+description: A note-taking application built with Flutter.
+
+confinement: strict
+base: core22
+grade: stable
+
+slots:
+  dbus-dashnotes:
+    interface: dbus
+    bus: session
+    name: org.bar.dashnotes
+
+apps:
+  dashnotes:
+    command: dashnotes
+    extensions: [gnome] # gnome includes the libraries required by flutter
+    plugs:
+      - network
+    slots:
+      - dbus-dashnotes
+parts:
+  dashnotes:
+    source: .
+    plugin: flutter
+    flutter-target: lib/main.dart # The main entry-point file of the application
