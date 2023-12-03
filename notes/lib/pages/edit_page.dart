@@ -32,20 +32,17 @@ class EditPage extends StatelessWidget {
           padding: const EdgeInsets.all(12.0),
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 110),
-                child: TextFormField(
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
-                  },
-                  controller: titleController,
-                  maxLength: 24,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(), labelText: 'Title'),
-                ),
+              TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter some text';
+                  }
+                  return null;
+                },
+                controller: titleController,
+                maxLength: 32,
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(), labelText: 'Title'),
               ),
               const SizedBox(
                 height: 10,
