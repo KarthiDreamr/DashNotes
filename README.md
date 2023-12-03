@@ -38,7 +38,7 @@ If you want to build the application on your own, clone the repository and follo
 
 ```bash
 git clone https://github.com/KarthiDreamr/DashNotes
-cd DashNotes
+cd dashnotes
 flutter build [platform]
 ```
 
