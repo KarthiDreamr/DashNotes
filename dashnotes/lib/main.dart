@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:notes/providers/shared_preference_provider.dart';
+import '/providers/shared_preference_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'pages/home_page.dart';

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=DashNotes
+Comment=A note-taking application built with Flutter.
+Exec=dashnotes
+Icon=${SNAP}/meta/gui/dashnotes-icon.png
+Terminal=false
+Type=Application
+Categories=Education;

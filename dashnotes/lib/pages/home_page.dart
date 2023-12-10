@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:notes/pages/edit_page.dart';
-import 'package:notes/providers/shared_preference_provider.dart';
+import '/pages/edit_page.dart';
+import '/providers/shared_preference_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/notes_list_provider.dart';
